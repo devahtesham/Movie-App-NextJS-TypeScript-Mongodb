@@ -11,7 +11,7 @@ import { PipelineStage } from "mongoose";
 import { connectDB, getCollection } from "../../app/api/db/connection";
 
 interface MOVIES_PAGINATION {
-    page: number, limit: number, query?: string
+    page?: number, limit?: number, query?: string
 }
 
 export async function getMoviesAPI({ page, limit }: MOVIES_PAGINATION) {
@@ -21,7 +21,7 @@ export async function getMoviesAPI({ page, limit }: MOVIES_PAGINATION) {
     return data
 }
 
-export async function getMovies({ page, limit, query }: MOVIES_PAGINATION) {
+export async function getMovies({ page = 1, limit = 10, query }: MOVIES_PAGINATION) {
     // console.log('[query]', query)
     const skip = (page - 1) * limit
 
@@ -61,9 +61,8 @@ export async function getMovies({ page, limit, query }: MOVIES_PAGINATION) {
 
         const results = await moviesCollection?.aggregate(pipeline).toArray();
 
-        // forcely wait to show loading skeleton
-        // await wait(2000)
-        return results
+        // since now we are passing this mongoDB documentsto client components so we need to segregate this data
+        return JSON.parse(JSON.stringify(results))
     } catch (error) {
         console.log(error)
     }
@@ -72,7 +71,7 @@ export async function getMovies({ page, limit, query }: MOVIES_PAGINATION) {
 }
 
 export function wait(time: number) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         setTimeout(() => {
             resolve('Resolve')
         }, time)

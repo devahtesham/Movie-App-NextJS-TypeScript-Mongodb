@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 // helper db functions
 export async function connectDB() {
     // reuse the existing connection
-    if (mongoose.connection.readyState === 1) {
+    if (mongoose.connection?.readyState === 1) {
         console.log("MongoDB already connected !");
         return
     }

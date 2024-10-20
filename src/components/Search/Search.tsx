@@ -1,14 +1,13 @@
 "use client"
 
-import { usePathname, useRouter } from 'next/navigation'
-import React, { memo, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import React, {useEffect, useState } from 'react'
 
 type SearchPropsType = {
     searchQuery: string | undefined
-    page: number
 }
 
-function Search({ searchQuery, page }: SearchPropsType) {
+function Search({ searchQuery }: SearchPropsType) {
     const [searchText, setSearchText] = useState<string | undefined>(searchQuery);
     const router = useRouter();
 
@@ -19,17 +18,12 @@ function Search({ searchQuery, page }: SearchPropsType) {
     useEffect(() => {
         if (searchText) {
             const timer = setTimeout(() => {
-                console.log('[SEARCH COMP IS CALLING ...]')
-                router.push(`/movies?search=${searchText}&page=${page}`)
+                router.push(`/movies?search=${searchText}`)
             }, 700);
 
             // Cleanup to clear timeout
             return () => clearTimeout(timer)
-        } else if (!searchText && ['page', 'search'].every((text)=> window.location.href.includes(text))) {
-            console.log("else is running ")
-            console.log("[searchText]", searchText)
-            console.log("[window.location.href]", window.location.href)
-
+        } else {
             router.push('/movies')
         }
     }, [searchText])
